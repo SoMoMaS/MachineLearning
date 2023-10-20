@@ -1,0 +1,49 @@
+from typing import Union
+
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+class Picture(BaseModel):
+    pixels: []
+
+class FacialKeyPoints(BaseModel):
+    left_eye_center_x: float	
+    left_eye_center_y: float
+    right_eye_center_x: float	
+    right_eye_center_y: float	
+    left_eye_inner_corner_x: float
+    left_eye_inner_corner_y: float
+    left_eye_outer_corner_x: float
+    left_eye_outer_corner_y: float
+    right_eye_inner_corner_x: float
+    right_eye_inner_corner_y: float
+    right_eye_outer_corner_x: float
+    right_eye_outer_corner_y: float
+    left_eyebrow_inner_end_x: float
+    left_eyebrow_inner_end_y: float
+    left_eyebrow_outer_end_x: float
+    left_eyebrow_outer_end_y: float
+    right_eyebrow_inner_end_x: float
+    right_eyebrow_inner_end_y: float
+    right_eyebrow_outer_end_x: float
+    right_eyebrow_outer_end_y: float
+    nose_tip_x: float
+    nose_tip_y: float
+    mouth_left_corner_x: float	
+    mouth_left_corner_y: float
+    mouth_right_corner_x: float
+    mouth_right_corner_y: float
+    mouth_center_top_lip_x: float
+    mouth_center_top_lip_y: float
+    mouth_center_bottom_lip_x: float
+    mouth_center_bottom_lip_y: float
+
+
+
+app = FastAPI()
+
+@app.get("/facialkeypoints")
+def get_facial_keypoints(picture:Picture):
+    return {"Hello": "World"}
+
+
