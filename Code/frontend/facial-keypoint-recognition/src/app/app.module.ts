@@ -5,17 +5,19 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { HttpClientModule } from '@angular/common/http';
-import { WebcamComponentComponent } from './components/webcam-component/webcam-component.component';
+import {WebcamModule} from 'ngx-webcam';
+import { CameraComponent } from './components/camera/camera.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    WebcamComponentComponent
+    CameraComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    WebcamModule
   ],
   providers: [],
   bootstrap: [AppComponent]
