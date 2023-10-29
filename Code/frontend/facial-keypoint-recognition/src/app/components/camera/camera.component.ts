@@ -14,6 +14,7 @@ export class CameraComponent implements OnInit {
   public multipleWebcamsAvailable = false;
   public deviceId: string = ""
   public allowCameraSwitch = false;
+  public captureImageData = true;
   public videoOptions: MediaTrackConstraints = {
     // width: {ideal: 1024},
     // height: {ideal: 576}
@@ -40,7 +41,10 @@ export class CameraComponent implements OnInit {
 
   public handleImage(webcamImage: WebcamImage): void {
     console.info('received webcam image', webcamImage);
+    webcamImage.imageAsBase64
+    console.log(webcamImage.imageData);
     this.pictureTaken.emit(webcamImage);
+    
   }
 
   public get triggerObservable(): Observable<void> {
