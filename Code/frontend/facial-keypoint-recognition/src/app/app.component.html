@@ -1,4 +1,13 @@
-<app-camera (pictureTaken)="handleImage($event)"></app-camera>
-<div class="snapshot" *ngIf="webcamImage">
-  <img [src]="webcamImage.imageAsDataUrl" />
-</div>
+
+
+
+<mat-grid-list cols="2">
+  <mat-grid-tile>
+    <app-camera (pictureTaken)="handleImage($event)"></app-camera>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <div class="snapshot" *ngIf="webcamImage">
+      <img [src]="webcamImage.imageAsDataUrl" />
+    </div>
+  </mat-grid-tile>
+</mat-grid-list>

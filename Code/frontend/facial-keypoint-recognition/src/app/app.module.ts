@@ -7,6 +7,8 @@ import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import {WebcamModule} from 'ngx-webcam';
 import { CameraComponent } from './components/camera/camera.component';
+import {MatGridListModule} from '@angular/material/grid-list';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -17,7 +19,9 @@ import { CameraComponent } from './components/camera/camera.component';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    WebcamModule
+    WebcamModule,
+    MatGridListModule,
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
