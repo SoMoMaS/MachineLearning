@@ -43,7 +43,7 @@ export class CameraComponent implements OnInit {
   public sendFacialKeypointRequest(): void {
     if(this.currentImage != undefined){
       let normalizedArray = Array.prototype.slice.call(this.currentImage.imageData.data)
-      this.facialKeyPointsService.getFacialKeypointsRawImage({ pixels: normalizedArray, data_url: ""})
+      this.facialKeyPointsService.getFacialKeypointsRawImage({ pixels: normalizedArray, width: this.currentImage.imageData.width, height: this.currentImage.imageData.height})
     }
   }
   public toggleWebcam(): void {

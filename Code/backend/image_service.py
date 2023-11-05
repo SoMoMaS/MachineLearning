@@ -18,6 +18,8 @@ def convert_dataurl_to_image(data_url):
 # This method resizes an image to have even sides
 def normalize_image(image: Image):
     width, height = image.size
+    print(width)
+    print(height)
     side_length = 0
 
     if (width > height):
@@ -36,15 +38,18 @@ def resize_image(image, width, height):
 
 # This method will print given points on an image by coordinates
 def print_points_on_image(image, points):
-    
+    fig = plt.figure(frameon=False)
     for i in range(len(points)//2):
         x = points[i]
         y = points[i + 1]
         plt.plot(x, y, marker='o', color="red") 
 
+    plt.axis('off') 
+    plt.autoscale(True)
     plt.imshow(image) 
-    plt.show()
-    plt.savefig('augmented.png')
+   
+    # plt.show()
+    plt.savefig('augmented.png', bbox_inches='tight')
 
 
 def vis_im_keypoint_notstandard(img, points, axs): # same function as before but deals with keypoints when they are not standardized

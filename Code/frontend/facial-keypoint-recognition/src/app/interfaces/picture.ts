@@ -1,4 +1,6 @@
 export interface Picture {
     pixels: number[];
-    data_url: string;
+    width: number;
+    height: number;
+
 }

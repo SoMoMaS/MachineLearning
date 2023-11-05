@@ -19,7 +19,8 @@ from starlette.middleware.cors import CORSMiddleware
 
 class Picture(BaseModel):
     pixels: list = []
-    data_url: str
+    width: int
+    height: int
 
 
 # Load models
@@ -72,11 +73,15 @@ async def get_facial_keypoints_by_raw_image(picture: Picture):
 
     # Convert the pixels into an array using numpy
     array = np.array(picture.pixels, dtype=np.uint8)
-    formatted = np.reshape(array, (480, 640, 4))
+    formatted = np.reshape(array, (picture.height, picture.width, 4))
     image = Image.fromarray(formatted)
     image.save('original.png')
 
     normalized_image = normalize_image(image) # resized to same sides 
+    normalized_width, normalized_height = normalized_image.size
+    print(normalized_width)
+    print(normalized_height)
+
     normalized_image.save('normalized.png')
 
     shrunk_image = resize_image(normalized_image, 96, 96) # Resized image to 96x96
@@ -89,15 +94,56 @@ async def get_facial_keypoints_by_raw_image(picture: Picture):
     avarage_image = Image.fromarray(avarage_pixels_array_formatted)
     avarage_image.save('avarage.png')
 
+    # Problem might be here
     formatedPixels = preparePixelData(avarage_pixels, 96, 96)
     predicted_points = ml_model_100_epochs.predict(formatedPixels)[0]
     facialKeypoints = convertToFacialKeypoints(predicted_points)
 
-    print_points_on_image(avarage_image, predicted_points)
+
+    upscaled_coordinates = upscale_coordinates(predicted_points, normalized_width)
+    print_points_on_image(normalized_image, upscaled_coordinates)
+
+    #print_points_on_image(avarage_image, predicted_points)
+
+    result_image = Image.open('augmented.png')
+    pixels = list(result_image.getdata())
+    width, height = result_image.size
+    pixels = [pixels[i * width:(i + 1) * width] for i in range(height)]
+
+    print(pixels)
+    pixels_mixed = []
+    for pixel in pixels:
+        pixels_mixed.append(pixel[0])
+        pixels_mixed.append(pixel[1])
+        pixels_mixed.append(pixel[2])
+
+    print("BEAK")
+    print(pixels_mixed)
+    picture.pixels = pixels_mixed
+
+    return picture
+
+def upscale_coordinates(coordinates, image_size):
+
+    upscaled_coordinates = []
+    for i in range(len(coordinates)//2):
+        x = coordinates[i]
+        y = coordinates[i + 1]
+
+        x_ratio = x / 96
+        y_ratio = y / 96
+
+        new_x = round(x_ratio * image_size, 0)
+        new_y = round(y_ratio * image_size, 0)
+
+        upscaled_coordinates.append(new_x)
+        upscaled_coordinates.append(new_y)
+
+    return upscaled_coordinates
 
 
 
-    return facialKeypoints
+
 
 def preparePixelData(pixels, width, height):
     data = []
@@ -134,8 +180,5 @@ def convertToFacialKeypoints(predicted_points):
     facialKeyPoints.mouth_right_corner = positions[12]
     facialKeyPoints.mouth_center_top_lip = positions[13]
     facialKeyPoints.mouth_center_bottom_lip = positions[14]
-
-    print(facialKeyPoints)
-
     return facialKeyPoints
 
