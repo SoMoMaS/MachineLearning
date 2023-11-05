@@ -2,6 +2,7 @@ from facial_keypoint import Position
 from binascii import a2b_base64
 from PIL import Image
 import base64
+import matplotlib.pyplot as plt
 
 def convert_dataurl_to_image(data_url):
     print(data_url)
@@ -35,7 +36,29 @@ def resize_image(image, width, height):
 
 # This method will print given points on an image by coordinates
 def print_points_on_image(image, points):
-    print(image)
+    
+    for i in range(len(points)//2):
+        x = points[i]
+        y = points[i + 1]
+        plt.plot(x, y, marker='o', color="red") 
+
+    plt.imshow(image) 
+    plt.show()
+    plt.savefig('augmented.png')
+
+
+def vis_im_keypoint_notstandard(img, points, axs): # same function as before but deals with keypoints when they are not standardized
+  # fig = plt.figure(figsize=(6, 4))
+  print(points)
+  axs.imshow(img.reshape(96, 96))
+  for point in points:
+      print(point)
+
+  xcoords = (points[0::2] + 0.)
+  ycoords = (points[1::2] + 0.) 
+  axs.scatter(xcoords, ycoords, color='red', marker='o')
+
+
 
 
 def get_average_pixels(image, width, height):
@@ -44,11 +67,11 @@ def get_average_pixels(image, width, height):
 
     for x in range(width):
         for y in range(height):
-            pixel = pixels[x, y]
+           
+            pixel = pixels[y, x]
             sum = 0
+            counter = 0
             for val in pixel:
                 sum +=val
-
             average_pixels.append(sum//len(pixel))
-
     return average_pixels

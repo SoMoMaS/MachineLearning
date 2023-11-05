@@ -13,6 +13,7 @@ import numpy as np
 
 from PIL import Image
 
+
 #from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.cors import CORSMiddleware
 
@@ -28,19 +29,6 @@ ml_model_100_epochs = tf.keras.models.load_model('./Models/100/facial_keypoint_m
 
 
 app = FastAPI()
-
-# origins = [
-#     "http://localhost",
-#     "http://localhost:8000",
-# ]
-
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=origins,
-#     allow_credentials=True,
-#     allow_methods=["*"],
-#     allow_headers=["*"],
-# )
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"], expose_headers=["*"])
 
 @app.get("/facialkeypoints/epochs_10")
@@ -96,10 +84,18 @@ async def get_facial_keypoints_by_raw_image(picture: Picture):
 
     avarage_pixels = get_average_pixels(shrunk_image, 96, 96)
 
+    avarage_pixels_array = np.array(avarage_pixels, dtype=np.uint8)
+    avarage_pixels_array_formatted = np.reshape(avarage_pixels_array, (96, 96))
+    avarage_image = Image.fromarray(avarage_pixels_array_formatted)
+    avarage_image.save('avarage.png')
 
     formatedPixels = preparePixelData(avarage_pixels, 96, 96)
     predicted_points = ml_model_100_epochs.predict(formatedPixels)[0]
     facialKeypoints = convertToFacialKeypoints(predicted_points)
+
+    print_points_on_image(avarage_image, predicted_points)
+
+
 
     return facialKeypoints
 
