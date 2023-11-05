@@ -16,12 +16,13 @@ def convert_dataurl_to_image(data_url):
 
 # This method resizes an image to have even sides
 def normalize_image(image: Image):
+    width, height = image.size
     side_length = 0
 
-    if (image.Image.width > image.Image.height):
-        side_length = image.Image.width
+    if (width > height):
+        side_length = height
     else:
-        side_length = image.Image.height
+        side_length = width
     
     new_image = image.resize((side_length, side_length))
     return new_image
@@ -36,3 +37,18 @@ def resize_image(image, width, height):
 def print_points_on_image(image, points):
     print(image)
 
+
+def get_average_pixels(image, width, height):
+    pixels = image.load()
+    average_pixels = []
+
+    for x in range(width):
+        for y in range(height):
+            pixel = pixels[x, y]
+            sum = 0
+            for val in pixel:
+                sum +=val
+
+            average_pixels.append(sum//len(pixel))
+
+    return average_pixels

@@ -6,10 +6,15 @@ from pydantic import BaseModel
 
 from facial_keypoint import FacialKeyPoints, Position
 
-from image_service import convert_dataurl_to_image, normalize_image, resize_image, print_points_on_image
+from image_service import convert_dataurl_to_image, normalize_image, resize_image, print_points_on_image, get_average_pixels
 
 import tensorflow as tf
 import numpy as np
+
+from PIL import Image
+
+#from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.cors import CORSMiddleware
 
 class Picture(BaseModel):
     pixels: list = []
@@ -23,6 +28,20 @@ ml_model_100_epochs = tf.keras.models.load_model('./Models/100/facial_keypoint_m
 
 
 app = FastAPI()
+
+# origins = [
+#     "http://localhost",
+#     "http://localhost:8000",
+# ]
+
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=origins,
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"], expose_headers=["*"])
 
 @app.get("/facialkeypoints/epochs_10")
 async def get_facial_keypoints(picture: Picture) -> FacialKeyPoints:
@@ -63,13 +82,33 @@ async def get_facial_keypoints_by_data_url(picture: Picture):
 @app.post("/facialkeypoints/raw")
 async def get_facial_keypoints_by_raw_image(picture: Picture):
 
-    return True
+    # Convert the pixels into an array using numpy
+    array = np.array(picture.pixels, dtype=np.uint8)
+    formatted = np.reshape(array, (480, 640, 4))
+    image = Image.fromarray(formatted)
+    image.save('original.png')
+
+    normalized_image = normalize_image(image) # resized to same sides 
+    normalized_image.save('normalized.png')
+
+    shrunk_image = resize_image(normalized_image, 96, 96) # Resized image to 96x96
+    shrunk_image.save('shrunk.png')
+
+    avarage_pixels = get_average_pixels(shrunk_image, 96, 96)
+
+
+    formatedPixels = preparePixelData(avarage_pixels, 96, 96)
+    predicted_points = ml_model_100_epochs.predict(formatedPixels)[0]
+    facialKeypoints = convertToFacialKeypoints(predicted_points)
+
+    return facialKeypoints
 
 def preparePixelData(pixels, width, height):
     data = []
     test_imgs_arr = np.array(pixels, dtype='float')
     test_imgs_arr = np.reshape(test_imgs_arr, (1, width, height, 1))
     data = test_imgs_arr/255.
+    
     return data
 
 def convertToFacialKeypoints(predicted_points):

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Picture } from '../interfaces/picture';
 import { FacialKeypoints } from '../interfaces/facial-keypoints';
@@ -11,7 +11,7 @@ import { Observable } from 'rxjs';
 export class FacialKeypointsService {
 
 
-  serverURI = "http://localhost/8000/"
+  serverURI = "http://localhost:8000/"
   constructor(private http: HttpClient) { }
 
 
@@ -28,8 +28,10 @@ export class FacialKeypointsService {
   }
 
   getFacialKeypointsRawImage(picture: Picture){
-    console.log(picture.pixels.length)
-    this.http.post<any>(this.serverURI + "facialkeypoints/raw", picture).subscribe(result => {
+    const headers = new HttpHeaders();
+    headers.append('Content-Type', 'application/json');
+    console.log(this.serverURI + "facialkeypoints/raw")
+    this.http.post<any>(this.serverURI + "facialkeypoints/raw", picture, {headers: headers}).subscribe(result => {
       console.log(result);
     })
   }
