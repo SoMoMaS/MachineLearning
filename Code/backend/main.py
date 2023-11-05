@@ -108,9 +108,12 @@ async def get_facial_keypoints_by_raw_image(picture: Picture):
     result_image = Image.open('augmented.png')
     pixels = list(result_image.getdata())
     width, height = result_image.size
+    print("BEAK")
+    print(width)
+    print(height)
     pixels = [pixels[i * width:(i + 1) * width] for i in range(height)]
 
-    print(pixels)
+    #print(pixels)
     pixels_mixed = []
     for pixel in pixels:
         pixels_mixed.append(pixel[0])
@@ -118,7 +121,7 @@ async def get_facial_keypoints_by_raw_image(picture: Picture):
         pixels_mixed.append(pixel[2])
 
     print("BEAK")
-    print(pixels_mixed)
+    #print(pixels_mixed)
     picture.pixels = pixels_mixed
 
     return picture
