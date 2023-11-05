@@ -8,9 +8,10 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class FacialKeypointsServiceService {
+export class FacialKeypointsService {
 
-  serverURI = "http://127.0.0.1/8000/"
+
+  serverURI = "http://localhost/8000/"
   constructor(private http: HttpClient) { }
 
 
@@ -24,5 +25,12 @@ export class FacialKeypointsServiceService {
 
   getFacialKeypoints100(picture: Picture): Observable<any>{
     return this.http.get(this.serverURI + "facialkeypoints/epochs_100")
+  }
+
+  getFacialKeypointsRawImage(picture: Picture){
+    console.log(picture.pixels.length)
+    this.http.post<any>(this.serverURI + "facialkeypoints/raw", picture).subscribe(result => {
+      console.log(result);
+    })
   }
 }

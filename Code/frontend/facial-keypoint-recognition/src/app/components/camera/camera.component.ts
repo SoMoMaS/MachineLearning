@@ -1,12 +1,19 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import { WebcamImage, WebcamInitError, WebcamUtil } from 'ngx-webcam';
+import { FacialKeypointsService } from '../../services/facial-keypoints.service'
+import { Picture } from '../../interfaces/picture'
+import { NONE_TYPE } from '@angular/compiler';
 @Component({
   selector: 'app-camera',
   templateUrl: './camera.component.html',
   styleUrls: ['./camera.component.css']
 })
 export class CameraComponent implements OnInit {
+  constructor(private facialKeyPointsService : FacialKeypointsService){}
+
+  private currentImage: WebcamImage | undefined;
+
   @Output()
   public pictureTaken = new EventEmitter<WebcamImage>();
   // toggle webcam on/off
@@ -32,6 +39,13 @@ export class CameraComponent implements OnInit {
   public triggerSnapshot(): void {
     this.trigger.next();
   }
+
+  public sendFacialKeypointRequest(): void {
+    if(this.currentImage != undefined){
+      let normalizedArray = Array.prototype.slice.call(this.currentImage.imageData.data)
+      this.facialKeyPointsService.getFacialKeypointsRawImage({ pixels: normalizedArray, data_url: ""})
+    }
+  }
   public toggleWebcam(): void {
     this.showWebcam = !this.showWebcam;
   }
@@ -42,7 +56,8 @@ export class CameraComponent implements OnInit {
   public handleImage(webcamImage: WebcamImage): void {
     console.info('received webcam image', webcamImage);
     webcamImage.imageAsBase64
-    console.log(webcamImage.imageData);
+    this.currentImage = webcamImage
+    console.log(webcamImage.imageData.data);
     this.pictureTaken.emit(webcamImage);
     
   }
