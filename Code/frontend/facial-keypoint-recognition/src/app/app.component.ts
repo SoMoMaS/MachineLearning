@@ -12,7 +12,12 @@ export class AppComponent {
 
   // latest snapshot
   public webcamImage: WebcamImage = null!;
+  public dataUrl: string = null!;
   handleImage(webcamImage: WebcamImage) {
     this.webcamImage = webcamImage;
+  }
+
+  handleFacialKeypointsRequestResult(dataUrl: string){
+    this.dataUrl = dataUrl;
   }
 }

@@ -12,6 +12,8 @@ import tensorflow as tf
 import numpy as np
 
 from PIL import Image
+import io
+import base64
 
 
 #from fastapi.middleware.cors import CORSMiddleware
@@ -106,25 +108,33 @@ async def get_facial_keypoints_by_raw_image(picture: Picture):
     #print_points_on_image(avarage_image, predicted_points)
 
     result_image = Image.open('augmented.png')
-    pixels = list(result_image.getdata())
-    width, height = result_image.size
-    print("BEAK")
-    print(width)
-    print(height)
-    pixels = [pixels[i * width:(i + 1) * width] for i in range(height)]
+    data_url = 'data:image/png;base64,' + pillow_image_to_base64_string(result_image)    
+
+    # pixels = list(result_image.getdata())
+    # width, height = result_image.size
+    # pixels = [pixels[i * width:(i + 1) * width] for i in range(height)]
 
     #print(pixels)
-    pixels_mixed = []
-    for pixel in pixels:
-        pixels_mixed.append(pixel[0])
-        pixels_mixed.append(pixel[1])
-        pixels_mixed.append(pixel[2])
+    # pixels_mixed = []
+    # for pixel in pixels:
+    #     pixels_mixed.append(pixel[0])
+    #     pixels_mixed.append(pixel[1])
+    #     pixels_mixed.append(pixel[2])
 
-    print("BEAK")
-    #print(pixels_mixed)
-    picture.pixels = pixels_mixed
+    # #print(pixels_mixed)
+    # picture.pixels = pixels_mixed
 
-    return picture
+    return data_url 
+
+def pillow_image_to_base64_string(img):
+    buffered = io.BytesIO()
+    img.save(buffered, format="PNG")
+    return base64.b64encode(buffered.getvalue()).decode("utf-8")
+
+
+def base64_string_to_pillow_image(base64_str):
+    return Image.open(io.BytesIO(base64.decodebytes(bytes(base64_str, "utf-8"))))
+
 
 def upscale_coordinates(coordinates, image_size):
 

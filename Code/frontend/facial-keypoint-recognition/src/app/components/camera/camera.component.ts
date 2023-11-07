@@ -14,8 +14,9 @@ export class CameraComponent implements OnInit {
 
   private currentImage: WebcamImage | undefined;
 
-  @Output()
-  public pictureTaken = new EventEmitter<WebcamImage>();
+  @Output()  public pictureTaken = new EventEmitter<WebcamImage>();
+  @Output()  public keypointsPredicted = new EventEmitter<string>();
+  
   // toggle webcam on/off
   public showWebcam = true;
   public multipleWebcamsAvailable = false;
@@ -43,7 +44,11 @@ export class CameraComponent implements OnInit {
   public sendFacialKeypointRequest(): void {
     if(this.currentImage != undefined){
       let normalizedArray = Array.prototype.slice.call(this.currentImage.imageData.data)
-      this.facialKeyPointsService.getFacialKeypointsRawImage({ pixels: normalizedArray, width: this.currentImage.imageData.width, height: this.currentImage.imageData.height})
+      let data_url = this.facialKeyPointsService.getFacialKeypointsRawImage({ pixels: normalizedArray, width: this.currentImage.imageData.width, height: this.currentImage.imageData.height})
+      console.log(data_url)
+
+      data_url.subscribe(url =>  this.keypointsPredicted.emit(url))
+     
     }
   }
   public toggleWebcam(): void {

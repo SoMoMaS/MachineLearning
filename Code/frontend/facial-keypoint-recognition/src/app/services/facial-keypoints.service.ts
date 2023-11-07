@@ -27,12 +27,10 @@ export class FacialKeypointsService {
     return this.http.get(this.serverURI + "facialkeypoints/epochs_100")
   }
 
-  getFacialKeypointsRawImage(picture: Picture){
+  getFacialKeypointsRawImage(picture: Picture): Observable<string>{
     const headers = new HttpHeaders();
     headers.append('Content-Type', 'application/json');
     console.log(this.serverURI + "facialkeypoints/raw")
-    this.http.post<any>(this.serverURI + "facialkeypoints/raw", picture, {headers: headers}).subscribe(result => {
-      console.log(result);
-    })
+    return this.http.post<string>(this.serverURI + "facialkeypoints/raw", picture, {headers: headers})
   }
 }
