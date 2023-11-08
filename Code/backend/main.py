@@ -126,9 +126,7 @@ def base64_string_to_pillow_image(base64_str):
 
 
 def upscale_coordinates(coordinates, image_size):
-    print("About to upscale. Image size of normalized image: ", image_size)
     upscaled_coordinates = []
-    print("Normalized image size: " + str(image_size))
 
     for i in range(len(coordinates)//2):
         x = coordinates[i*2]
@@ -142,7 +140,6 @@ def upscale_coordinates(coordinates, image_size):
         upscaled_coordinates.append(new_x)
         upscaled_coordinates.append(new_y)
 
-    print(upscaled_coordinates)
     return upscaled_coordinates
 
 
