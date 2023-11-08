@@ -6,7 +6,7 @@ from pydantic import BaseModel
 
 from facial_keypoint import FacialKeyPoints, Position
 
-from image_service import convert_dataurl_to_image, normalize_image, resize_image, print_points_on_image, get_average_pixels
+from image_service import convert_dataurl_to_image, normalize_image, resize_image, print_points_on_image, get_average_pixels, crop_image
 
 import tensorflow as tf
 import numpy as np
@@ -79,10 +79,11 @@ async def get_facial_keypoints_by_raw_image(picture: Picture):
     image = Image.fromarray(formatted)
     image.save('original.png')
 
-    normalized_image = normalize_image(image) # resized to same sides 
+    # Cut sides off 
+    croped_image = crop_image(image, picture.width, picture.height)
+
+    normalized_image = normalize_image(croped_image) # resized to same sides 
     normalized_width, normalized_height = normalized_image.size
-    print(normalized_width)
-    print(normalized_height)
 
     normalized_image.save('normalized.png')
 
@@ -101,28 +102,16 @@ async def get_facial_keypoints_by_raw_image(picture: Picture):
     predicted_points = ml_model_100_epochs.predict(formatedPixels)[0]
     facialKeypoints = convertToFacialKeypoints(predicted_points)
 
+    print_points_on_image(avarage_image, predicted_points, 'test.png')
+
 
     upscaled_coordinates = upscale_coordinates(predicted_points, normalized_width)
-    print_points_on_image(normalized_image, upscaled_coordinates)
+    print_points_on_image(normalized_image, upscaled_coordinates, 'augmented.png')
 
     #print_points_on_image(avarage_image, predicted_points)
 
     result_image = Image.open('augmented.png')
     data_url = 'data:image/png;base64,' + pillow_image_to_base64_string(result_image)    
-
-    # pixels = list(result_image.getdata())
-    # width, height = result_image.size
-    # pixels = [pixels[i * width:(i + 1) * width] for i in range(height)]
-
-    #print(pixels)
-    # pixels_mixed = []
-    # for pixel in pixels:
-    #     pixels_mixed.append(pixel[0])
-    #     pixels_mixed.append(pixel[1])
-    #     pixels_mixed.append(pixel[2])
-
-    # #print(pixels_mixed)
-    # picture.pixels = pixels_mixed
 
     return data_url 
 
@@ -137,21 +126,27 @@ def base64_string_to_pillow_image(base64_str):
 
 
 def upscale_coordinates(coordinates, image_size):
-
+    print("About to upscale. Image size of normalized image: ", image_size)
     upscaled_coordinates = []
+    print("Normalized image size: " + str(image_size))
+
     for i in range(len(coordinates)//2):
         x = coordinates[i]
         y = coordinates[i + 1]
 
-        x_ratio = x / 96
-        y_ratio = y / 96
+        x_ratio = x / 96.
+        y_ratio = y / 96.
 
         new_x = round(x_ratio * image_size, 0)
         new_y = round(y_ratio * image_size, 0)
-
+        print("x_ratio " + str(x_ratio))
+        print("y_ratio " + str(y_ratio))
+        print("Coordinates on shrunk(96x96) image --> x: " +  str(x) + " y: " + str(y))
+        print("Coordinates on normalized()" + str(image_size) + "x" + str(image_size) + ") image --> x: " + str(new_x) + " y: " + str(new_y))
         upscaled_coordinates.append(new_x)
         upscaled_coordinates.append(new_y)
 
+    print(upscaled_coordinates)
     return upscaled_coordinates
 
 
@@ -163,7 +158,6 @@ def preparePixelData(pixels, width, height):
     test_imgs_arr = np.array(pixels, dtype='float')
     test_imgs_arr = np.reshape(test_imgs_arr, (1, width, height, 1))
     data = test_imgs_arr/255.
-    
     return data
 
 def convertToFacialKeypoints(predicted_points):
@@ -177,7 +171,6 @@ def convertToFacialKeypoints(predicted_points):
         position = Position(x_Coordinate = x, y_Coordinate = y)
         positions.append(position)
         i += 2
-    print(positions)
     facialKeyPoints.left_eye_center = positions[0]
     facialKeyPoints.right_eye_center = positions[1]
     facialKeyPoints.left_eye_inner_corner = positions[2]

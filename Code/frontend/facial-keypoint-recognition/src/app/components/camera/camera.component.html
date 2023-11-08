@@ -1,15 +1,11 @@
-<div style="text-align:center">
-    <div>
-        <webcam [height]="500" [width]="500" [trigger]="triggerObservable" (imageCapture)="handleImage($event)"
-            *ngIf="showWebcam" [videoOptions]="videoOptions" [allowCameraSwitch]="allowCameraSwitch" [captureImageData]="captureImageData" [imageType]="'image/png'"
-            (initError)="handleInitError($event)"></webcam>
-        <br />
-        <div class="actionBtn" (click)="triggerSnapshot();" title="Take Picture">📸</div>
-    </div>
-</div>
-<h4 *ngIf="errors.length > 0">Messages:</h4>
-<ul *ngFor="let error of errors">
-    <li>{{error | json}}</li>
-</ul>
 
-<button mat-raised-button color="primary" (click)="sendFacialKeypointRequest()">Send Request</button>
+<div fxLayout="column" fxLayoutAlign="space-between">
+    <webcam [height]="500" [width]="500" [trigger]="triggerObservable" (imageCapture)="handleImage($event)"
+    *ngIf="showWebcam" [videoOptions]="videoOptions" [allowCameraSwitch]="allowCameraSwitch" [captureImageData]="captureImageData" [imageType]="'image/png'"
+    (initError)="handleInitError($event)"></webcam>
+    
+  
+    <div class="actionBtn" style="text-align:center" (click)="triggerSnapshot();" title="Take Picture">📸</div>
+    <button mat-raised-button color="primary" (click)="sendFacialKeypointRequest()">Send Request</button>
+
+</div>

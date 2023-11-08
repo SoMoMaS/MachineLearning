@@ -3,7 +3,15 @@ import { Subject, Observable } from 'rxjs';
 import { WebcamImage, WebcamInitError, WebcamUtil } from 'ngx-webcam';
 import { FacialKeypointsService } from '../../services/facial-keypoints.service'
 import { Picture } from '../../interfaces/picture'
-import { NONE_TYPE } from '@angular/compiler';
+import {MatGridListModule} from '@angular/material/grid-list';
+
+
+export interface Tile {
+  color: string;
+  cols: number;
+  rows: number;
+  text: string;
+}
 @Component({
   selector: 'app-camera',
   templateUrl: './camera.component.html',

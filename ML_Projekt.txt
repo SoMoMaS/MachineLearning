@@ -1,0 +1,13 @@
+Angular Frontend-->Angular Frontend:Take snapshot of webcam
+
+Angular Frontend->FastAPI Backend:Sending image in pixels
+
+
+
+
+
+note over FastAPI Backend:- Scale image to same size\n- Scale image to 96x96\n- Apply ML model in image \n- Upscale keypoints to original image \n- Draw points on image \n- Convert image to data url
+
+
+Angular Frontend<-FastAPI Backend:Sending image in form of data url
+

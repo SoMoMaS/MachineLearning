@@ -37,11 +37,11 @@ def resize_image(image, width, height):
     return new_image
 
 # This method will print given points on an image by coordinates
-def print_points_on_image(image, points):
+def print_points_on_image(image, points, filename):
     fig = plt.figure(frameon=False)
     for i in range(len(points)//2):
-        x = points[i]
-        y = points[i + 1]
+        x = points[i*2]
+        y = points[i*2 + 1]
         plt.plot(x, y, marker='o', color="red") 
 
     plt.axis('off') 
@@ -49,7 +49,7 @@ def print_points_on_image(image, points):
     plt.imshow(image) 
    
     # plt.show()
-    plt.savefig('augmented.png', bbox_inches='tight')
+    plt.savefig(filename, bbox_inches='tight')
 
 
 def vis_im_keypoint_notstandard(img, points, axs): # same function as before but deals with keypoints when they are not standardized
@@ -80,3 +80,29 @@ def get_average_pixels(image, width, height):
                 sum +=val
             average_pixels.append(sum//len(pixel))
     return average_pixels
+
+
+# This method crops the image 
+def crop_image(image, width, height):
+
+    # left_upper_corner_x = 0
+    # left_upper_corner_y = 0
+
+    # right_bottom_x = 0
+    # right_bottom_y = 0
+
+    width_third = width / 3
+    height_fourth = height / 4
+
+    left_upper_corner_x = width_third
+    right_bottom_x = width_third * 2
+
+    left_upper_corner_y = height_fourth
+    right_bottom_y = height_fourth * 3
+
+    cropper_image = image.crop((left_upper_corner_x, left_upper_corner_y, right_bottom_x, right_bottom_y))
+ 
+    # Shows the image in image viewer
+    cropper_image.show()
+
+    return cropper_image
