@@ -46,7 +46,7 @@ def print_points_on_image(image, points, filename):
 
     plt.axis('off') 
     plt.autoscale(True)
-    plt.imshow(image) 
+    plt.imshow(image)
    
     # plt.show()
     plt.savefig(filename, bbox_inches='tight')
@@ -85,12 +85,6 @@ def get_average_pixels(image, width, height):
 # This method crops the image 
 def crop_image(image, width, height):
 
-    # left_upper_corner_x = 0
-    # left_upper_corner_y = 0
-
-    # right_bottom_x = 0
-    # right_bottom_y = 0
-
     width_third = width / 3
     height_fourth = height / 4
 
@@ -102,7 +96,4 @@ def crop_image(image, width, height):
 
     cropper_image = image.crop((left_upper_corner_x, left_upper_corner_y, right_bottom_x, right_bottom_y))
  
-    # Shows the image in image viewer
-    cropper_image.show()
-
     return cropper_image

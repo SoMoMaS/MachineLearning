@@ -131,18 +131,14 @@ def upscale_coordinates(coordinates, image_size):
     print("Normalized image size: " + str(image_size))
 
     for i in range(len(coordinates)//2):
-        x = coordinates[i]
-        y = coordinates[i + 1]
+        x = coordinates[i*2]
+        y = coordinates[i*2 + 1]
 
         x_ratio = x / 96.
         y_ratio = y / 96.
 
         new_x = round(x_ratio * image_size, 0)
         new_y = round(y_ratio * image_size, 0)
-        print("x_ratio " + str(x_ratio))
-        print("y_ratio " + str(y_ratio))
-        print("Coordinates on shrunk(96x96) image --> x: " +  str(x) + " y: " + str(y))
-        print("Coordinates on normalized()" + str(image_size) + "x" + str(image_size) + ") image --> x: " + str(new_x) + " y: " + str(new_y))
         upscaled_coordinates.append(new_x)
         upscaled_coordinates.append(new_y)
 
