@@ -4,11 +4,31 @@ This repository contains a facial recognition project for the machine learning s
 ## TODOs
 
 ### Backend
-- [ ] Augmentation not right
-- [ ] Plot will be saved as 389x389 instead of 480x480
+- [X] Augmentation not right
+- [X] Plot will be saved as 389x389 instead of 480x480
 - [X] Pixels are not sent back in a correct form
-- [ ] Clean up
+- [X] Clean up
 
 ### Frontend
 - [ ] Improve design
-- [ ] Display new image from the backend
+- [X] Display new image from the backend
+
+
+## Start project
+
+### Backend
+The server was written in the **FastAPI** framework with python. In this section you'll find information how to start the server.
+From the root folder change the directory to the folder of backend with the following command: 
+```console
+cd ./Code/backend
+```
+
+Start the server with **uvicorn** like following: 
+```console
+uvicorn main:app --reload
+```
+
+As default the server will be running on localhost port 8000. To access a documentation of the avaliable endpoints click [here](http://localhost:8000/docs).
+
+
+### Frontend
