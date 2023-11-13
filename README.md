@@ -32,3 +32,13 @@ As default the server will be running on localhost port 8000. To access a docume
 
 
 ### Frontend
+To start the frontend, you'll need to change the current directory to the following:
+```console
+cd ./Code/frontend/facial-keypoint-recognition
+```
+
+then run the anglar app with the following command:
+```console
+ng serve
+```
+The frontend is now avaliable at [localhost:4200](http://localhost:4200/). You need to allow the application to use the webcam of your device.
